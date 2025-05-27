@@ -11,7 +11,7 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 ## 📌 Call Analyzer Flow
 
 ![Call Analyzer Flow](Results/final%20map.png)
-![Call Analyzer Flow](Results/final%20map.png)
+
 
 ---
 
@@ -69,7 +69,7 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 
 ### 6. 🧾 Summary Generation
 
-<!-- Summary generation does not have an image provided -->
+![summary ](Results/summary3.png)
 
 * **Model Used:** Fine-tuned [T5 (Text-to-Text Transfer Transformer)](https://huggingface.co/models)
 * **Testing Code:** [T5(fine-tuned)\_testing\_done.py](Ai_model_testing_individually/T5%28fine-tuned%29_testing_done.py)
@@ -98,7 +98,7 @@ We have tested the pipeline with real audio files. All results and inputs are av
 
 ### 1. 🧠 AI Audio Processing Pipeline
 
-![AI Audio Processing Pipeline](Results/final%20map.png)
+
 Created an orchestration pipeline in Python which integrates all the models as illustrated in the flow diagram.
 ![AI Audio Processing Flow](Results/final%20map.png)
 
