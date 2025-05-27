@@ -1,0 +1,536 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 13 11:51:17 2025
+
+@author: amit
+"""
+
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Processing Pipeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+        .progress {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #dropArea {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        #dropArea.highlight {
+            border-color: #007bff;
+            background-color: #e8f0fe;
+        }
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Audio Processing Pipeline</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Upload Audio File</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="dropArea">
+                            <h5>Drag & Drop MP3 File Here</h5>
+                            <p>or</p>
+                            <input type="file" id="fileInput" class="d-none" accept=".mp3">
+                            <button id="browseButton" class="btn btn-primary">Browse Files</button>
+                        </div>
+                        
+                        <div id="uploadStatus" class="alert alert-info d-none">
+                            <div id="uploadMessage"></div>
+                            <div class="progress d-none" id="uploadProgress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="processingSection" class="card d-none">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Processing Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="jobInfo"></div>
+                        <div class="progress mt-3">
+                            <div id="processingBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div id="statusMessage" class="mt-2"></div>
+                    </div>
+                </div>
+
+                <div id="resultsSection" class="result-section">
+                    <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="transcript-tab" data-bs-toggle="tab" data-bs-target="#transcript" type="button" role="tab">Transcript</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="diarization-tab" data-bs-toggle="tab" data-bs-target="#diarization" type="button" role="tab">Diarization</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab">Summary</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="sentiment-tab" data-bs-toggle="tab" data-bs-target="#sentiment" type="button" role="tab">Sentiment</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="downloads-tab" data-bs-toggle="tab" data-bs-target="#downloads" type="button" role="tab">Downloads</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="resultTabsContent">
+                        <div class="tab-pane fade show active" id="transcript" role="tabpanel">
+                            <h4>Full Transcript</h4>
+                            <pre id="transcriptContent" class="border p-3 bg-light"></pre>
+                        </div>
+                        <div class="tab-pane fade" id="diarization" role="tabpanel">
+                            <h4>Speaker Diarization</h4>
+                            <div id="diarizationContent" class="border p-3 bg-light"></div>
+                        </div>
+                        <div class="tab-pane fade" id="summary" role="tabpanel">
+                            <h4>Summary</h4>
+                            <div id="summaryContent" class="border p-3 bg-light"></div>
+                        </div>
+                        <div class="tab-pane fade" id="sentiment" role="tabpanel">
+                            <h4>Sentiment Analysis</h4>
+                            <div id="sentimentContent" class="border p-3 bg-light"></div>
+                        </div>
+                        <div class="tab-pane fade" id="downloads" role="tabpanel">
+                            <h4>Download Results</h4>
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="transcript">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Full Transcript</h5>
+                                        <small>Text file</small>
+                                    </div>
+                                    <p class="mb-1">Complete transcription of the audio file</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="formatted">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Formatted Transcript</h5>
+                                        <small>Text file</small>
+                                    </div>
+                                    <p class="mb-1">Transcript formatted with speaker labels</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="diarization">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Diarization Results</h5>
+                                        <small>JSON file</small>
+                                    </div>
+                                    <p class="mb-1">Speaker identification with timestamps</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="aligned">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Aligned Transcript</h5>
+                                        <small>JSON file</small>
+                                    </div>
+                                    <p class="mb-1">Complete transcript aligned with speakers</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="summary">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Summary</h5>
+                                        <small>Text file</small>
+                                    </div>
+                                    <p class="mb-1">AI-generated summary of the content</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action download-link" data-type="sentiment">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Sentiment Analysis</h5>
+                                        <small>JSON file</small>
+                                    </div>
+                                    <p class="mb-1">Sentiment scores for each speaker segment</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables
+            let currentJobId = null;
+            let statusCheckInterval = null;
+            const dropArea = document.getElementById('dropArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseButton = document.getElementById('browseButton');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const uploadMessage = document.getElementById('uploadMessage');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const processingSection = document.getElementById('processingSection');
+            const jobInfo = document.getElementById('jobInfo');
+            const processingBar = document.getElementById('processingBar');
+            const statusMessage = document.getElementById('statusMessage');
+            const resultsSection = document.getElementById('resultsSection');
+
+            // Event listeners for file drag & drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropArea.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                dropArea.classList.remove('highlight');
+            }
+
+            // Handle file drop
+            dropArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    handleFiles(files);
+                }
+            }
+
+            // Handle file selection via browse button
+            browseButton.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length === 0) return;
+                
+                const file = files[0];
+                
+                // Check if file is an MP3
+                if (!file.name.toLowerCase().endsWith('.mp3')) {
+                    showUploadMessage('Only MP3 files are allowed', 'danger');
+                    return;
+                }
+                
+                uploadFile(file);
+            }
+
+            function showUploadMessage(message, type = 'info') {
+                uploadStatus.classList.remove('d-none', 'alert-info', 'alert-success', 'alert-danger');
+                uploadStatus.classList.add(`alert-${type}`);
+                uploadMessage.textContent = message;
+                uploadStatus.classList.add('d-block');
+            }
+
+            function uploadFile(file) {
+                // Show upload progress
+                showUploadMessage(`Uploading ${file.name}...`);
+                uploadProgress.classList.remove('d-none');
+                
+                const formData = new FormData();
+                formData.append('audioFile', file);
+                
+                const xhr = new XMLHttpRequest();
+                
+                // Upload progress event
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        uploadProgress.querySelector('.progress-bar').style.width = percentComplete + '%';
+                    }
+                });
+                
+                // Upload complete
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        showUploadMessage(`Upload complete. Processing started.`, 'success');
+                        
+                        // Store the job ID and start checking status
+                        currentJobId = response.job_id;
+                        startStatusCheck(currentJobId);
+                        
+                        // Show processing section
+                        processingSection.classList.remove('d-none');
+                        jobInfo.innerHTML = `<strong>Job ID:</strong> ${currentJobId}<br><strong>File:</strong> ${file.name}`;
+                    } else {
+                        let errorMsg = 'Upload failed';
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            errorMsg = response.error || errorMsg;
+                        } catch (e) {}
+                        showUploadMessage(errorMsg, 'danger');
+                    }
+                });
+                
+                // Upload error
+                xhr.addEventListener('error', () => {
+                    showUploadMessage('Upload failed. Please try again.', 'danger');
+                });
+                
+                // Send the file
+                xhr.open('POST', '/upload', true);
+                xhr.send(formData);
+            }
+
+            function startStatusCheck(jobId) {
+                // Clear any existing interval
+                if (statusCheckInterval) {
+                    clearInterval(statusCheckInterval);
+                }
+                
+                // Set progress bar to indeterminate
+                processingBar.style.width = '25%';
+                statusMessage.textContent = 'Processing started...';
+                
+                // Check status every 5 seconds
+                statusCheckInterval = setInterval(() => {
+                    checkJobStatus(jobId);
+                }, 5000);
+                
+                // Also check immediately
+                checkJobStatus(jobId);
+            }
+
+            function checkJobStatus(jobId) {
+                fetch(`/status/${jobId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateStatusUI(data);
+                        
+                        // If processing is complete, stop checking and fetch results
+                        if (data.status === 'completed' || data.status === 'partially_completed') {
+                            clearInterval(statusCheckInterval);
+                            fetchResults(jobId);
+                        } else if (data.status === 'failed') {
+                            clearInterval(statusCheckInterval);
+                            statusMessage.textContent = 'Processing failed. Please check logs.';
+                            processingBar.classList.remove('bg-info');
+                            processingBar.classList.add('bg-danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking status:', error);
+                        statusMessage.textContent = 'Error checking status. Retrying...';
+                    });
+            }
+
+            function updateStatusUI(statusData) {
+                // Update progress bar based on status
+                let progressPercent = 25;
+                let statusText = 'Processing in progress...';
+                
+                switch (statusData.status) {
+                    case 'started':
+                        progressPercent = 25;
+                        statusText = 'Processing started...';
+                        break;
+                    case 'diarization_complete':
+                        progressPercent = 40;
+                        statusText = 'Diarization complete. Transcribing...';
+                        break;
+                    case 'transcription_complete':
+                        progressPercent = 60;
+                        statusText = 'Transcription complete. Aligning...';
+                        break;
+                    case 'alignment_complete':
+                        progressPercent = 75;
+                        statusText = 'Alignment complete. Analyzing...';
+                        break;
+                    case 'partially_completed':
+                        progressPercent = 90;
+                        statusText = 'Some processing steps completed.';
+                        processingBar.classList.remove('bg-info');
+                        processingBar.classList.add('bg-warning');
+                        break;
+                    case 'completed':
+                        progressPercent = 100;
+                        statusText = 'Processing complete!';
+                        processingBar.classList.remove('bg-info');
+                        processingBar.classList.add('bg-success');
+                        break;
+                    case 'failed':
+                        progressPercent = 100;
+                        statusText = 'Processing failed.';
+                        processingBar.classList.remove('bg-info');
+                        processingBar.classList.add('bg-danger');
+                        break;
+                }
+                
+                processingBar.style.width = `${progressPercent}%`;
+                statusMessage.textContent = statusText;
+                
+                // Add duration if available
+                if (statusData.duration) {
+                    const durationSeconds = statusData.duration.toFixed(2);
+                    statusMessage.textContent += ` (${durationSeconds}s)`;
+                }
+            }
+
+            function fetchResults(jobId) {
+                fetch(`/results/${jobId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            statusMessage.textContent += ' Error fetching results.';
+                            return;
+                        }
+                        
+                        displayResults(data);
+                        setupDownloadLinks(jobId);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching results:', error);
+                        statusMessage.textContent += ' Error fetching results.';
+                    });
+            }
+
+            function displayResults(data) {
+                // Show results section
+                resultsSection.style.display = 'block';
+                
+                // Get outputs from the data
+                const outputs = data.results.outputs || {};
+                
+                // Display transcript
+                if (outputs.transcript) {
+                    document.getElementById('transcriptContent').textContent = outputs.transcript;
+                } else {
+                    document.getElementById('transcriptContent').textContent = 'Transcript not available';
+                }
+                
+                // Display diarization
+                if (outputs.diarization) {
+                    const diarizationHtml = formatDiarization(outputs.diarization);
+                    document.getElementById('diarizationContent').innerHTML = diarizationHtml;
+                } else {
+                    document.getElementById('diarizationContent').textContent = 'Diarization not available';
+                }
+                
+                // Display summary
+                if (outputs.summary) {
+                    document.getElementById('summaryContent').textContent = outputs.summary;
+                } else {
+                    document.getElementById('summaryContent').textContent = 'Summary not available';
+                }
+                
+                // Display sentiment
+                if (outputs.sentiment) {
+                    const sentimentHtml = formatSentiment(outputs.sentiment);
+                    document.getElementById('sentimentContent').innerHTML = sentimentHtml;
+                } else {
+                    document.getElementById('sentimentContent').textContent = 'Sentiment analysis not available';
+                }
+            }
+
+            function formatDiarization(diarization) {
+                if (!Array.isArray(diarization)) return '<p>Invalid diarization data</p>';
+                
+                let html = '<div class="table-responsive"><table class="table table-striped">';
+                html += '<thead><tr><th>Speaker</th><th>Start Time</th><th>End Time</th><th>Duration</th></tr></thead><tbody>';
+                
+                diarization.forEach(segment => {
+                    const start = formatTime(segment.start);
+                    const end = formatTime(segment.end);
+                    const duration = formatTime(segment.end - segment.start);
+                    
+                    html += `<tr>
+                        <td>${segment.speaker}</td>
+                        <td>${start}</td>
+                        <td>${end}</td>
+                        <td>${duration}</td>
+                    </tr>`;
+                });
+                
+                html += '</tbody></table></div>';
+                return html;
+            }
+
+            function formatSentiment(sentiment) {
+                if (!Array.isArray(sentiment)) return '<p>Invalid sentiment data</p>';
+                
+                let html = '<div class="table-responsive"><table class="table table-striped">';
+                html += '<thead><tr><th>Speaker</th><th>Time</th><th>Sentiment</th><th>Text</th></tr></thead><tbody>';
+                
+                sentiment.forEach(item => {
+                    // Determine sentiment class for coloring
+                    let sentimentClass = 'text-secondary';
+                    if (item.sentiment === 'positive') {
+                        sentimentClass = 'text-success';
+                    } else if (item.sentiment === 'negative') {
+                        sentimentClass = 'text-danger';
+                    }
+                    
+                    html += `<tr>
+                        <td>${item.speaker}</td>
+                        <td>${item.timestamp}</td>
+                        <td><span class="${sentimentClass}">${item.sentiment}</span></td>
+                        <td>${item.text}</td>
+                    </tr>`;
+                });
+                
+                html += '</tbody></table></div>';
+                return html;
+            }
+
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function setupDownloadLinks(jobId) {
+                const downloadLinks = document.querySelectorAll('.download-link');
+                
+                downloadLinks.forEach(link => {
+                    const fileType = link.getAttribute('data-type');
+                    link.href = `/download/${jobId}/${fileType}`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
