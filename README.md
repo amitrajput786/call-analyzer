@@ -128,4 +128,5 @@ The pipeline takes a single audio input and processes it through the AI models. 
 
 ---
 
-Let me know if you want to add image references for backend/frontend structure or a deployment guide!
+E-mail: amitrajput51169@gmail.com
+Team: Link_clown(team_leader)
