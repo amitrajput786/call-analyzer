@@ -33,55 +33,55 @@ I will include architecture diagrams and code images for clarity.
 ### 1. 🎧 Audio to Text Transcription
 
 * **Model Used:** Fine-tuned [Whisper-Base](https://github.com/openai/whisper)
-* **Testing Code:** `Ai_model_testing_individually/whisper_testingFinal.py`
-* **Input:** 16kHz audio call file \[`Results/english_taking_4_people_5mins_set3.mp3`]
-* **Output:** Raw text transcript \[`Results/whisper_transcript(4).txt`]
+* **Testing Code:** [`whisper_testingFinal.py`](Ai_model_testing_individually/whisper_testingFinal.py)
+* **Input:** 16kHz audio call file [`english_taking_4_people_5mins_set3.mp3`](Results/english_taking_4_people_5mins_set3.mp3)
+* **Output:** Raw text transcript [`whisper_transcript(4).txt`](Results/whisper_transcript%284%29.txt)
 * **Purpose:** Converts audio into readable text.
 
 ### 2. 📝 Formatted Transcript
 
 * Converts the raw transcript into a more human-readable and structured format.
-* **Formatted Transcript:** \[`Results/formatted_transcript(6).txt`]
+* **Formatted Transcript:** [`formatted_transcript(6).txt`](Results/formatted_transcript%286%29.txt)
 
-### 3. 🚩 Speaker Diarization
+### 3. 🗣️ Speaker Diarization
 
 * **Tool Used:** [pyannote-audio](https://github.com/pyannote/pyannote-audio)
-* **Testing Code:** `Ai_model_testing_individually/speech_brain_tested.py`
-* **Input:** 16kHz audio file \[`Results/english_taking_4_people_5mins_set3.mp3`]
-* **Output:** Speaker Diarization JSON \[`Results/diarization_result(5).json`]
+* **Testing Code:** [`speech_brain_tested.py`](Ai_model_testing_individually/speech_brain_tested.py)
+* **Input:** 16kHz audio file [`english_taking_4_people_5mins_set3.mp3`](Results/english_taking_4_people_5mins_set3.mp3)
+* **Output:** Speaker Diarization JSON [`diarization_result(5).json`](Results/diarization_result%285%29.json)
 * **Purpose:** Identifies "who spoke when" in the conversation.
 
 ### 4. 🔗 Aligned Transcript
 
 * Combines:
 
-  * Formatted transcript \[`Results/formatted_transcript(6).txt`]
-  * Speaker diarization results \[`Results/diarization_result(5).json`]
-* **Output:** Aligned Transcript JSON \[`Results/aligned_transcript(4).json`]
+  * Formatted transcript [`formatted_transcript(6).txt`](Results/formatted_transcript%286%29.txt)
+  * Speaker diarization results [`diarization_result(5).json`](Results/diarization_result%285%29.json)
+* **Output:** Aligned Transcript JSON [`aligned_transcript(4).json`](Results/aligned_transcript%284%29.json)
 * **Purpose:** Creates a full transcript with speaker attribution.
 
 ### 5. 💬 Sentiment Analysis
 
 * **Model Used:** [Indic-BERT](https://huggingface.co/ai4bharat/indic-bert)
-* **Testing Code:** `Ai_model_testing_individually/indicBERT_tested.py`
-* **Input:** Aligned transcript \[`Results/aligned_transcript(4).json`]
-* **Output:** Sentiment Results JSON \[`Results/sentiment_results(4).json`]
+* **Testing Code:** [`indicBERT_tested.py`](Ai_model_testing_individually/indicBERT_tested.py)
+* **Input:** Aligned transcript [`aligned_transcript(4).json`](Results/aligned_transcript%284%29.json)
+* **Output:** Sentiment Results JSON [`sentiment_results(4).json`](Results/sentiment_results%284%29.json)
 
   * Sentiment: Positive, Negative, Neutral
   * NPS: Net Promoter Score
 
-### 6. 📟 Summary Generation
+### 6. 🧾 Summary Generation
 
 * **Model Used:** Fine-tuned [T5 (Text-to-Text Transfer Transformer)](https://huggingface.co/models)
-* **Testing Code:** `Ai_model_testing_individually/T5(fine-tuned)_testing_done.py`
-* **Fine-Tuning Script:** `googel-T5_fine-tuning/fine_tune_t5C.py`
+* **Testing Code:** [`T5(fine-tuned)_testing_done.py`](Ai_model_testing_individually/T5%28fine-tuned%29_testing_done.py)
+* **Fine-Tuning Script:** [`fine_tune_t5C.py`](googel-T5_fine-tuning/fine_tune_t5C.py)
 * **Input:** Sentiment-analyzed transcript
-* **Output:** Summary Output \[`Results/summary_output(3).txt`]
+* **Output:** Summary Output [`summary_output(3).txt`](Results/summary_output%283%29.txt)
 * **Purpose:** Quickly helps companies understand the nature and outcome of the call.
 
 ---
 
-## 📂 Input Format
+## 🗃️ Input Format
 
 * `.wav` or `.mp3` audio file (mono/stereo, resampled to 16kHz)
 
@@ -89,27 +89,27 @@ I will include architecture diagrams and code images for clarity.
 
 ## 📄 Output Files
 
-* `whisper_transcript(4).txt` – Raw transcript from Whisper
-* `formatted_transcript(6).txt` – Cleaned and structured text
-* `diarization_result(5).json` – Speaker segments
-* `aligned_transcript(4).json` – Speaker-labeled full transcript
-* `sentiment_results(4).json` – Sentiment analysis with NPS
-* `summary_output(3).txt` – T5-generated conversation summary
+* [`whisper_transcript(4).txt`](Results/whisper_transcript%284%29.txt) – Raw transcript from Whisper
+* [`formatted_transcript(6).txt`](Results/formatted_transcript%286%29.txt) – Cleaned and structured text
+* [`diarization_result(5).json`](Results/diarization_result%285%29.json) – Speaker segments
+* [`aligned_transcript(4).json`](Results/aligned_transcript%284%29.json) – Speaker-labeled full transcript
+* [`sentiment_results(4).json`](Results/sentiment_results%284%29.json) – Sentiment analysis with NPS
+* [`summary_output(3).txt`](Results/summary_output%283%29.txt) – T5-generated conversation summary
 
 ---
 
-## 🔮 Testing Code
+## 🔬 Testing Code
 
 All individual modules are tested and organized under:
 
-**Folder:** `Ai_model_testing_individually/`
+**Folder:** [`Ai_model_testing_individually/`](Ai_model_testing_individually/)
 
 Includes:
 
-* Whisper: `whisper_testingFinal.py`
-* Diarization: `speech_brain_tested.py`
-* Sentiment Analysis: `indicBERT_tested.py`
-* Summary: `T5(fine-tuned)_testing_done.py`
+* Whisper: [`whisper_testingFinal.py`](Ai_model_testing_individually/whisper_testingFinal.py)
+* Diarization: [`speech_brain_tested.py`](Ai_model_testing_individually/speech_brain_tested.py)
+* Sentiment Analysis: [`indicBERT_tested.py`](Ai_model_testing_individually/indicBERT_tested.py)
+* Summary: [`T5(fine-tuned)_testing_done.py`](Ai_model_testing_individually/T5%28fine-tuned%29_testing_done.py)
 
 ---
 
@@ -117,12 +117,12 @@ Includes:
 
 All outputs, including test audio and result files, are available in:
 
-**Folder:** `Results/`
+**Folder:** [`Results/`](Results/)
 
-* `english_taking_4_people_5mins_set3.mp3` – Test Audio File
-* `whisper_transcript(4).txt`, `formatted_transcript(6).txt`
-* `diarization_result(5).json`, `aligned_transcript(4).json`
-* `sentiment_results(4).json`, `summary_output(3).txt`
+* [`english_taking_4_people_5mins_set3.mp3`](Results/english_taking_4_people_5mins_set3.mp3) – Test Audio File
+* [`whisper_transcript(4).txt`](Results/whisper_transcript%284%29.txt), [`formatted_transcript(6).txt`](Results/formatted_transcript%286%29.txt)
+* [`diarization_result(5).json`](Results/diarization_result%285%29.json), [`aligned_transcript(4).json`](Results/aligned_transcript%284%29.json)
+* [`sentiment_results(4).json`](Results/sentiment_results%284%29.json), [`summary_output(3).txt`](Results/summary_output%283%29.txt)
 
 ### 📸 Sample Result Preview
 
