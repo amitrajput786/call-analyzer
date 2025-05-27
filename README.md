@@ -10,7 +10,7 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 
 ## 📌 Call Analyzer Flow
 
-
+![Call Analyzer Flow](Results/final%20map.png)
 ![Call Analyzer Flow](Results/final%20map.png)
 
 ---
@@ -18,6 +18,8 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 ## ⚙️ Modules and Workflow
 
 ### 1. 🎧 Audio to Text Transcription
+
+![Audio to Text](Results/fomratted_transcript.png)
 
 * **Model Used:** Fine-tuned [Whisper-Base](https://github.com/openai/whisper)
 * **Testing Code:** [whisper\_testingFinal.py](Ai_model_testing_individually/whisper_testingFinal.py)
@@ -27,10 +29,14 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 
 ### 2. 📝 Formatted Transcript
 
+![Formatted Transcript](Results/whispertext.png)
+
 * Converts the raw transcript into a more human-readable and structured format.
 * **Formatted Transcript:** [formatted\_transcript(6).txt](Results/formatted_transcript%286%29.txt)
 
 ### 3. 🗣️ Speaker Diarization
+
+![Speaker Diarization](Results/dairization%20results%20.png)
 
 * **Tool Used:** [pyannote-audio](https://github.com/pyannote/pyannote-audio)
 * **Testing Code:** [speech\_brain\_tested.py](Ai_model_testing_individually/speech_brain_tested.py)
@@ -39,6 +45,8 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 * **Purpose:** Identifies “who spoke when” in the conversation.
 
 ### 4. 🔗 Aligned Transcript
+
+![Aligned Transcript](Results/alinged_transcript.png)
 
 * Combines:
 
@@ -49,6 +57,8 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
 
 ### 5. 💬 Sentiment Analysis
 
+![Sentiment Analysis](Results/sentiment.png)
+
 * **Model Used:** [Indic-BERT](https://huggingface.co/ai4bharat/indic-bert)
 * **Testing Code:** [indicBERT\_tested.py](Ai_model_testing_individually/indicBERT_tested.py)
 * **Input:** Aligned speaker-labeled transcript
@@ -58,6 +68,8 @@ We have also done local hosting of our **AI Audio Processing Web Application** u
   * NPS (Net Promoter Score)
 
 ### 6. 🧾 Summary Generation
+
+<!-- Summary generation does not have an image provided -->
 
 * **Model Used:** Fine-tuned [T5 (Text-to-Text Transfer Transformer)](https://huggingface.co/models)
 * **Testing Code:** [T5(fine-tuned)\_testing\_done.py](Ai_model_testing_individually/T5%28fine-tuned%29_testing_done.py)
@@ -86,7 +98,7 @@ We have tested the pipeline with real audio files. All results and inputs are av
 
 ### 1. 🧠 AI Audio Processing Pipeline
 
-
+![AI Audio Processing Pipeline](Results/final%20map.png)
 Created an orchestration pipeline in Python which integrates all the models as illustrated in the flow diagram.
 ![AI Audio Processing Flow](Results/final%20map.png)
 
@@ -100,11 +112,15 @@ The pipeline takes a single audio input and processes it through the AI models. 
 
 ### 2. 🔙 Backend
 
+**Pipeline API Logs:** [pipeline.log](pipeline.log)
+
 * **REST API File:** [pipeline\_api.py](backend/pipeline_api.py)
 * **Backend Integration:** [Audio\_\_pipeline\_backend\_integeration.py](backend/Audio__pipeline_backend_integeration.py)
 * Performs `GET` and `POST` requests to receive and respond to audio input from the frontend.
 
 ### 3. 🌐 Frontend
+
+![Frontend UI](Results/ui.png)
 
 * **Main App Connector:** [app.py](frontend/app.py)
 * **HTML UI File:** [index.html](frontend/index.html)
